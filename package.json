@@ -1,0 +1,16 @@
+{
+  "name": "passwarden",
+  "version": "1.0.0",
+  "description": "Export Bitwarden vault credentials from Firefox",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build:firefox": "node build/package-firefox.js",
+    "build:chrome": "node build/package-chrome.js"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "jest-webextension-mock": "^4.1.1",
+    "archiver": "^6.0.0"
+  }
+}
