@@ -6,6 +6,8 @@ function isFirefox() {
   return navigator.userAgent.includes('Firefox');
 }
 
+// TODO: Chrome support requires finding Bitwarden's service worker context differently.
+// The chrome-extension:// tab approach does not work for MV3 service workers.
 async function findBitwardenTabId() {
   const bgUrl = `moz-extension://${BITWARDEN_ID_FIREFOX}/background.html`;
   const tabs = await chrome.tabs.query({ url: bgUrl });
@@ -15,7 +17,7 @@ async function findBitwardenTabId() {
 
 async function triggerDownload(content, filename, mimeType) {
   const dataUrl = `data:${mimeType};charset=utf-8,` + encodeURIComponent(content);
-  await chrome.downloads.download({ url: dataUrl, filename });
+  await chrome.downloads.download({ url: dataUrl, filename, saveAs: false });
 }
 
 // Self-contained extractor function to be injected via executeScript
@@ -27,9 +29,9 @@ function inlineExtractorFn() {
       if (bitwardenMain.accountService && bitwardenMain.accountService.activeAccount$) {
         userId = await new Promise(function(resolve) {
           var sub = bitwardenMain.accountService.activeAccount$.subscribe(function(account) {
+            sub.unsubscribe();
             resolve(account ? account.id : null);
           });
-          sub.unsubscribe();
         });
       }
       if (!userId && bitwardenMain.stateService && bitwardenMain.stateService.getUserId) {
@@ -72,6 +74,8 @@ async function handleExport() {
   try {
     const results = await chrome.scripting.executeScript({
       target: { tabId },
+      // func: must receive a function reference, not an IIFE result.
+      // inlineExtractorFn is defined above and accesses window.bitwardenMain inside its body.
       func: inlineExtractorFn
     });
     extractionResult = results[0] && results[0].result;
