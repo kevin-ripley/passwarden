@@ -2,5 +2,8 @@ module.exports = {
   testEnvironment: 'node',
   setupFiles: ['jest-webextension-mock'],
   testMatch: ['**/tests/**/*.test.js'],
-  collectCoverageFrom: ['utils/**/*.js', 'scripts/**/*.js', 'background/**/*.js', 'popup/**/*.js']
+  collectCoverageFrom: ['utils/**/*.js', 'scripts/**/*.js', 'background/**/*.js', 'popup/**/*.js'],
+  transform: {
+    '^.+\\.js$': ['babel-jest', { parserOpts: { allowReturnOutsideFunction: true } }]
+  }
 };

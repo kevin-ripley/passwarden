@@ -6,11 +6,10 @@ async function extractLogins(bitwardenMain) {
   try {
     if (bitwardenMain.accountService?.activeAccount$) {
       userId = await new Promise((resolve) => {
-        let sub;
-        sub = bitwardenMain.accountService.activeAccount$.subscribe(account => {
-          if (sub) sub.unsubscribe();
+        const sub = bitwardenMain.accountService.activeAccount$.subscribe(account => {
           resolve(account?.id ?? null);
         });
+        sub.unsubscribe();
       });
     }
     if (!userId && bitwardenMain.stateService?.getUserId) {
@@ -38,13 +37,13 @@ async function extractLogins(bitwardenMain) {
   }
 }
 
-// Dual-mode: exported for tests, top-level return for executeScript injection
+// Dual-mode export:
+// - In Node/Jest (module is defined): export for unit tests.
+// - In executeScript func: injection (module is undefined): executeScript wraps
+//   the file as a function body, so the return sends the Promise back to the caller.
 if (typeof module !== 'undefined') {
   module.exports = { extractLogins };
+} else {
+  /* istanbul ignore next */
+  return extractLogins(window.bitwardenMain);
 }
-// When injected via chrome.scripting.executeScript the file runs inside a
-// function wrapper, so the bare `return` below is valid at runtime.  Babel /
-// Jest never reaches this branch because `module` is always defined there.
-/* istanbul ignore next */
-// eslint-disable-next-line no-unreachable
-void (typeof module === 'undefined' && extractLogins(window.bitwardenMain));
