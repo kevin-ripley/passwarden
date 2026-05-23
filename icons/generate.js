@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
 
 // Minimal valid PNG file bytes for a colored square icon
 // This creates a simple blue square PNG without any native dependencies
@@ -38,7 +39,6 @@ function createSimplePng(size) {
   ihdr[12] = 0;  // interlace
 
   // IDAT chunk - raw pixel data (blue #175DDC = r23,g93,b220)
-  const zlib = require('zlib');
   const rowSize = size * 3 + 1; // filter byte + RGB pixels
   const raw = Buffer.alloc(size * rowSize);
   for (let y = 0; y < size; y++) {
