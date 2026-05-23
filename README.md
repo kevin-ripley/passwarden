@@ -1,7 +1,11 @@
 # PassWarden
 
 Export your Bitwarden logins (username, password, URL) from Firefox as a CSV and
-Bitwarden-importable JSON file — with one click.
+Bitwarden-importable JSON file — with one click. Personally I forgot my master and there
+was no way to export login information without the master. Therefore I created a 
+program that could run for me since I had over 1,000 entries. I hope it helps someone else
+if they ever forget their master password, but their vault is still unlocked, and 
+they need to copy and paste all their login information into a new bitwarden account.
 
 **Requirements:** Bitwarden extension installed in Firefox, vault must be unlocked.
 
