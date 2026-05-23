@@ -67,7 +67,7 @@ async function handleExport() {
 
   const tabId = await findBitwardenTabId();
   if (tabId === null) {
-    return { status: 'bitwarden_not_found' };
+    return { status: 'not_found' };
   }
 
   let extractionResult;

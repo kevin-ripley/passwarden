@@ -47,11 +47,14 @@ function applyState(state) {
   }
 }
 
-// Wire up buttons when running in the browser (not in tests)
-if (typeof module === 'undefined') {
+if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage && typeof document !== 'undefined') {
   document.getElementById('exportBtn').addEventListener('click', () => {
     applyState({ type: 'loading' });
     chrome.runtime.sendMessage({ action: 'export' }, (response) => {
+      if (chrome.runtime.lastError || !response) {
+        applyState({ type: 'error' });
+        return;
+      }
       if (response.status === 'ok') {
         applyState({ type: 'success', count: response.count });
       } else {

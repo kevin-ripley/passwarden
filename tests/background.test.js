@@ -27,7 +27,7 @@ describe('handleExport', () => {
     expect(result.status).toBe('unsupported_browser');
   });
 
-  test('returns bitwarden_not_found when no Bitwarden tab exists', async () => {
+  test('returns not_found when no Bitwarden tab exists', async () => {
     Object.defineProperty(global.navigator, 'userAgent', {
       value: 'Mozilla/5.0 Firefox/124.0',
       configurable: true
@@ -35,7 +35,7 @@ describe('handleExport', () => {
     chrome.tabs.query.mockResolvedValue([]);
     const { handleExport } = loadBackground();
     const result = await handleExport();
-    expect(result.status).toBe('bitwarden_not_found');
+    expect(result.status).toBe('not_found');
   });
 
   test('returns locked when extractor reports locked', async () => {
